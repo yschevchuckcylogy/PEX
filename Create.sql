@@ -21,3 +21,5 @@ CREATE TABLE [dbo].[Vendor](
  [MonthlyCap] [bigint] NOT NULL,
  [Enabled] [bit] NOT NULL
 )
+
+GO
