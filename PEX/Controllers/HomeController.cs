@@ -1,8 +1,5 @@
-﻿using PEX.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using PEX.HomeViewModel;
+using PEX.Repositories;
 using System.Web.Mvc;
 
 namespace PEX.Controllers
@@ -16,12 +13,12 @@ namespace PEX.Controllers
             _repository = new Repository();
         }
 
-
         public ActionResult Index()
         {
             var vendors = _repository.GetVendors();
-
-            return View();
+            var model = new HomePageViewModel();
+            model.Vendors = vendors;
+            return View(model);
         }
 
         public ActionResult About()

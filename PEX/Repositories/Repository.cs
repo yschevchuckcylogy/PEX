@@ -18,7 +18,7 @@ namespace PEX.Repositories
             {
                 var vendors = new List<Vendor>();
                 connection.Open();
-                using (SqlCommand c = new SqlCommand($"SELECT E.Id FROM [dbo].Vendor AS V", connection))
+                using (SqlCommand c = new SqlCommand($"SELECT V.VendorID, V.VendorName, V.MonthlyPerUserCap, V.MonthlyCap, V.Enabled FROM [dbo].Vendor AS V", connection))
                 {
                     var a = c.ExecuteReader();
                     while (a.Read())
@@ -26,12 +26,82 @@ namespace PEX.Repositories
                         vendors.Add(new Vendor()
                         {
                             VendorID = a.GetString(0).Trim(),
-                            //StudentId = a.GetInt32(1),
-                            //StudentName = a.GetString(2).Trim(),
-                            //StudentLastName = a.GetString(3).Trim(),
-                            //Grade = a.GetInt32(4),
-                            //SubjectId = a.GetInt32(5),
-                            //SubjectTitle = a.GetString(6).Trim(),
+                            VendorName = a.GetString(1).Trim(),
+                            MonthlyPerUserCap = a.GetInt64(2),
+                            MonthlyCap = a.GetInt64(3),
+                            Enabled = a.GetBoolean(4)
+                        });
+                    }
+                }
+                return vendors;
+            }
+        }
+
+        public List<Transacrion> GetTransactionsByDate(DateTime date)
+        {
+            using (SqlConnection connection = PEXSqlConnection)
+            {
+                var transactions = new List<Transacrion>();
+                connection.Open();
+                using (SqlCommand c = new SqlCommand($"SELECT T.UserID, T.VendorID, T.TransactionAmount, T.TransactionDate FROM [dbo].Transaction AS T WHERE T.TransactionDate = {date}", connection))
+                {
+                    var a = c.ExecuteReader();
+                    while (a.Read())
+                    {
+                        transactions.Add(new Transacrion()
+                        {
+                            UserID = a.GetString(0).Trim(),
+                            VendorID = a.GetString(1).Trim(),
+                            TransactionAmount = a.GetInt64(2),
+                            TransactionDate = a.GetDateTime(3),
+                        });
+                    }
+                }
+                return transactions;
+            }
+        }
+
+        public Vendor GetVendorById(string vendorId)
+        {
+            using (SqlConnection connection = PEXSqlConnection)
+            {
+                var vendor = new Vendor();
+                connection.Open();
+                using (SqlCommand c = new SqlCommand($"SELECT V.VendorID, V.VendorName, V.MonthlyPerUserCap, V.MonthlyCap, V.Enabled FROM [dbo].Vendor AS V WHERE V.VendorID = {vendorId}", connection))
+                {
+                    var a = c.ExecuteReader();
+                    if (a.Read())
+                    {
+                        vendor.VendorID = a.GetString(0).Trim();
+                        vendor.VendorName = a.GetString(1).Trim();
+                        vendor.MonthlyPerUserCap = a.GetInt64(2);
+                        vendor.MonthlyCap = a.GetInt64(3);
+                        vendor.Enabled = a.GetBoolean(4);
+                    }
+
+                }
+                return vendor;
+            }
+        }
+
+        public List<Vendor> InsertTranzaction(Transacrion transaction)
+        {
+            using (SqlConnection connection = PEXSqlConnection)
+            {
+                var vendors = new List<Vendor>();
+                connection.Open();
+                using (SqlCommand c = new SqlCommand($"SELECT V.VendorID, V.VendorName, V.MonthlyPerUserCap, V.MonthlyCap, V.Enabled FROM [dbo].Vendor AS V", connection))
+                {
+                    var a = c.ExecuteReader();
+                    while (a.Read())
+                    {
+                        vendors.Add(new Vendor()
+                        {
+                            VendorID = a.GetString(0).Trim(),
+                            VendorName = a.GetString(1).Trim(),
+                            MonthlyPerUserCap = a.GetInt64(2),
+                            MonthlyCap = a.GetInt64(3),
+                            Enabled = a.GetBoolean(4)
                         });
                     }
                 }

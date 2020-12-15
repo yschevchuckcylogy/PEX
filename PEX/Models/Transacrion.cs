@@ -7,9 +7,9 @@ namespace PEX.Models
 {
     public class Transacrion
     {
-        public string USerID { get; set; }
+        public string UserID { get; set; }
         public string VendorID { get; set; }
-        public int TransactionAmount { get; set; }
+        public long TransactionAmount { get; set; }
         public DateTime TransactionDate { get; set; }
     }
 }

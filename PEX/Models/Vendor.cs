@@ -9,8 +9,8 @@ namespace PEX.Models
     {
         public string VendorID {get; set;}
         public string VendorName { get; set; }
-        public int MonthlyPerUserCap { get; set; }
-        public int MonthlyCap { get; set; }
+        public long MonthlyPerUserCap { get; set; }
+        public long MonthlyCap { get; set; }
         public bool Enabled { get; set; }
 
     }

@@ -1,6 +1,35 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model PEX.HomeViewModel.HomePageViewModel
+
+
+@if (Model != null)
+{
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">VendorID</th>
+                <th scope="col">VendorName</th>
+                <th scope="col">MonthlyPerUserCap</th>
+                <th scope="col">MonthlyCap</th>
+                <th scope="col">Enabled</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var v in Model.Vendors)
+            {
+                <tr>
+                    <th scope="row">@v.VendorID</th>
+                    <td>@v.VendorName</td>
+                    <td>@v.MonthlyPerUserCap</td>
+                    <td>@v.MonthlyCap</td>
+                    <td>@v.Enabled</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 }
+
+
 
 <div class="jumbotron">
     <h1>ASP.NET</h1>
