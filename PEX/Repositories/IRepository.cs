@@ -9,5 +9,6 @@ namespace PEX.Repositories
     public interface IRepository
     {
         List<Vendor> GetVendors();
+        void UpdateVendor(Vendor vendor);
     }
 }

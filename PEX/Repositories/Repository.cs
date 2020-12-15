@@ -37,6 +37,18 @@ namespace PEX.Repositories
             }
         }
 
+        public void UpdateVendor(Vendor vendor)
+        {
+            using (SqlConnection connection = PEXSqlConnection)
+            {
+                connection.Open();
+                using (SqlCommand c = new SqlCommand($"UPDATE [dbo].[Vendor] SET  VendorName = '{vendor.VendorName}', MonthlyPerUserCap = '{vendor.MonthlyPerUserCap}', Enabled = '{vendor.Enabled}' WHERE VendorID = {vendor.VendorID}", connection))
+                {
+                    c.ExecuteScalar();
+                }
+            }
+        }
+
         public List<Transacrion> GetTransactionsByDate(DateTime date)
         {
             using (SqlConnection connection = PEXSqlConnection)

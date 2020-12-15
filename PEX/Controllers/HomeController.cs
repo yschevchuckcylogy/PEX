@@ -1,4 +1,5 @@
 ﻿using PEX.HomeViewModel;
+using PEX.Models;
 using PEX.Repositories;
 using System.Web.Mvc;
 
@@ -21,18 +22,24 @@ namespace PEX.Controllers
             return View(model);
         }
 
-        public ActionResult About()
+        [HttpPost]
+        public ActionResult EditVendor([System.Web.Http.FromBody] Vendor vendor)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
+            _repository.UpdateVendor(vendor);
+            return RedirectToAction("Home");
         }
 
-        public ActionResult Contact()
+        [HttpGet]
+        public ActionResult SetAllVendorsCap(float cap)
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            var vensors = _repository.GetVendors();
+            foreach (var vendor in vensors)
+            {
+                vendor.MonthlyPerUserCapDollars = cap;
+                _repository.UpdateVendor(vendor);
+            }
+            return RedirectToAction("Home");
         }
+
     }
 }
