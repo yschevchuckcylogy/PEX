@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 
@@ -79,7 +80,7 @@ namespace PEX.Repositories
             {
                 var vendor = new Vendor();
                 connection.Open();
-                using (SqlCommand c = new SqlCommand($"SELECT V.VendorID, V.VendorName, V.MonthlyPerUserCap, V.MonthlyCap, V.Enabled FROM [dbo].Vendor AS V WHERE V.VendorID = {vendorId}", connection))
+                using (SqlCommand c = new SqlCommand($"SELECT V.VendorID, V.VendorName, V.MonthlyPerUserCap, V.MonthlyCap, V.Enabled FROM [dbo].Vendor AS V WHERE V.VendorID = '{vendorId}'", connection))
                 {
                     var a = c.ExecuteReader();
                     if (a.Read())
@@ -96,28 +97,44 @@ namespace PEX.Repositories
             }
         }
 
-        public List<Vendor> InsertTranzaction(Transacrion transaction)
+        public long GetTransactionSum(string vendorId, string userId, DateTime date)
         {
             using (SqlConnection connection = PEXSqlConnection)
             {
-                var vendors = new List<Vendor>();
+                long sum = 0;
                 connection.Open();
-                using (SqlCommand c = new SqlCommand($"SELECT V.VendorID, V.VendorName, V.MonthlyPerUserCap, V.MonthlyCap, V.Enabled FROM [dbo].Vendor AS V", connection))
+                using (SqlCommand c = 
+                    new SqlCommand($"SELECT SUM(T.TransactionAmount) FROM [dbo].Vendor AS V INNER JOIN[dbo].[Transaction] T ON(V.VendorID = T.VendorID) WHERE V.VendorID = '{vendorId}' AND T.UserID = '{userId}' AND YEAR(T.TransactionDate) = '{date.Year}' AND MONTH(T.TransactionDate) = '{date.Month}'", connection))
                 {
                     var a = c.ExecuteReader();
-                    while (a.Read())
+                    if (a.Read())
                     {
-                        vendors.Add(new Vendor()
-                        {
-                            VendorID = a.GetString(0).Trim(),
-                            VendorName = a.GetString(1).Trim(),
-                            MonthlyPerUserCap = a.GetInt64(2),
-                            MonthlyCap = a.GetInt64(3),
-                            Enabled = a.GetBoolean(4)
-                        });
+                        sum = a.GetInt64(0);
+                    }
+
+                }
+                return sum;
+            }
+        }
+
+        public ValidateTransactionResponse InsertTranzaction(ValidateTransactionRequest transaction)
+        {
+            using (SqlConnection connection = PEXSqlConnection)
+            {
+                var t = new ValidateTransactionResponse();
+                connection.Open();
+                using (SqlCommand c = new SqlCommand($"INSERT INTO [dbo].[Transaction] OUTPUT Inserted.UserId, Inserted.VendorID, Inserted.TransactionDate, Inserted.TransactionAmount VALUES('{transaction.userid}', '{transaction.vendorid}', {transaction.transactionamount}, GETDATE())", connection))
+                {
+                    var a = c.ExecuteReader();
+                    if (a.Read())
+                    {
+                        t.userId= a.GetString(0).Trim();
+                        t.vendorId = a.GetString(1).Trim();
+                        t.transactionDateTime = a.GetDateTime(2).ToString("yyyy-MM-dd'T'HH:mm:ss.fffK", CultureInfo.InvariantCulture); ;
+                        t.transactionAmount = a.GetInt64(3);
                     }
                 }
-                return vendors;
+                return t;
             }
         }
 

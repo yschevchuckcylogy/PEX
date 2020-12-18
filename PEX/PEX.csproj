@@ -132,6 +132,8 @@
     </Compile>
     <Compile Include="HomeViewModel\HomeViewModel.cs" />
     <Compile Include="Models\Transacrion.cs" />
+    <Compile Include="Models\ValidateTransactionRequest.cs" />
+    <Compile Include="Models\ValidateTransactionResponse.cs" />
     <Compile Include="Models\Vendor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IRepository.cs" />

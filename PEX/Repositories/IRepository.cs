@@ -10,5 +10,8 @@ namespace PEX.Repositories
     {
         List<Vendor> GetVendors();
         void UpdateVendor(Vendor vendor);
+        Vendor GetVendorById(string vendorId);
+        long GetTransactionSum(string vendorId, string userId, DateTime date);
+        ValidateTransactionResponse InsertTranzaction(ValidateTransactionRequest transaction);
     }
 }
