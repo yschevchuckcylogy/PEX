@@ -7,8 +7,8 @@ namespace PEX.Models
 {
     public class ValidateTransactionRequest
     {
-        public string userid { get; set; }
-        public string vendorid { get; set; }
-        public long transactionamount { get; set; }
+        public string UserId { get; set; }
+        public string VendorId { get; set; }
+        public long TransactionAmount { get; set; }
     }
 }

@@ -1,4 +1,20 @@
 ﻿var app = angular.module('app', []);
+
+app.directive('ngConfirmClick', [
+    function () {
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click', function (event) {
+                    if (window.confirm(msg)) {
+                        scope.$eval(clickAction);
+                    }
+                });
+            }
+        };
+    }]);
+
 app.controller("EditVendors", function ($http, $scope) {
 
 
@@ -25,7 +41,7 @@ app.controller("EditVendors", function ($http, $scope) {
                 'Content-Type': 'application/json'
             }
         }).then(function successCallback(response) {
-            location.reload()
+            location.reload();
         }, function errorCallback(response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.
@@ -37,7 +53,7 @@ app.controller("EditVendors", function ($http, $scope) {
             url: '/Home/SetAllVendorsCap?cap=' + cap,
             method: "GET"
         }).then(function successCallback(response) {
-            location.reload()
+            location.reload();
         }, function errorCallback(response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.

@@ -22,7 +22,7 @@ namespace PEX.Repositories
                 using (SqlCommand c = new SqlCommand($"SELECT V.VendorID, V.VendorName, V.MonthlyPerUserCap, V.MonthlyCap, V.Enabled FROM [dbo].Vendor AS V", connection))
                 {
                     var a = c.ExecuteReader();
-                    while (a.Read())
+                    while (a.Read() && a.GetValue(0) != DBNull.Value)
                     {
                         vendors.Add(new Vendor()
                         {
@@ -59,7 +59,7 @@ namespace PEX.Repositories
                 using (SqlCommand c = new SqlCommand($"SELECT T.UserID, T.VendorID, T.TransactionAmount, T.TransactionDate FROM [dbo].Transaction AS T WHERE T.TransactionDate = {date}", connection))
                 {
                     var a = c.ExecuteReader();
-                    while (a.Read())
+                    while (a.Read() && a.GetValue(0) != DBNull.Value)
                     {
                         transactions.Add(new Transacrion()
                         {
@@ -83,7 +83,7 @@ namespace PEX.Repositories
                 using (SqlCommand c = new SqlCommand($"SELECT V.VendorID, V.VendorName, V.MonthlyPerUserCap, V.MonthlyCap, V.Enabled FROM [dbo].Vendor AS V WHERE V.VendorID = '{vendorId}'", connection))
                 {
                     var a = c.ExecuteReader();
-                    if (a.Read())
+                    if (a.Read() && a.GetValue(0) != DBNull.Value)
                     {
                         vendor.VendorID = a.GetString(0).Trim();
                         vendor.VendorName = a.GetString(1).Trim();
@@ -107,7 +107,7 @@ namespace PEX.Repositories
                     new SqlCommand($"SELECT SUM(T.TransactionAmount) FROM [dbo].Vendor AS V INNER JOIN[dbo].[Transaction] T ON(V.VendorID = T.VendorID) WHERE V.VendorID = '{vendorId}' AND T.UserID = '{userId}' AND YEAR(T.TransactionDate) = '{date.Year}' AND MONTH(T.TransactionDate) = '{date.Month}'", connection))
                 {
                     var a = c.ExecuteReader();
-                    if (a.Read())
+                    if (a.Read() && a.GetValue(0) != DBNull.Value)
                     {
                         sum = a.GetInt64(0);
                     }
@@ -123,15 +123,15 @@ namespace PEX.Repositories
             {
                 var t = new ValidateTransactionResponse();
                 connection.Open();
-                using (SqlCommand c = new SqlCommand($"INSERT INTO [dbo].[Transaction] OUTPUT Inserted.UserId, Inserted.VendorID, Inserted.TransactionDate, Inserted.TransactionAmount VALUES('{transaction.userid}', '{transaction.vendorid}', {transaction.transactionamount}, GETDATE())", connection))
+                using (SqlCommand c = new SqlCommand($"INSERT INTO [dbo].[Transaction] OUTPUT Inserted.UserId, Inserted.VendorID, Inserted.TransactionDate, Inserted.TransactionAmount VALUES('{transaction.UserId}', '{transaction.VendorId}', {transaction.TransactionAmount}, GETDATE())", connection))
                 {
                     var a = c.ExecuteReader();
-                    if (a.Read())
+                    if (a.Read() && a.GetValue(0) != DBNull.Value)
                     {
-                        t.userId= a.GetString(0).Trim();
-                        t.vendorId = a.GetString(1).Trim();
-                        t.transactionDateTime = a.GetDateTime(2).ToString("yyyy-MM-dd'T'HH:mm:ss.fffK", CultureInfo.InvariantCulture); ;
-                        t.transactionAmount = a.GetInt64(3);
+                        t.UserId= a.GetString(0).Trim();
+                        t.VendorId = a.GetString(1).Trim();
+                        t.TransactionDateTime = a.GetDateTime(2).ToString("yyyy-MM-dd'T'HH:mm:ss.fffK", CultureInfo.InvariantCulture); ;
+                        t.TransactionAmount = a.GetInt64(3);
                     }
                 }
                 return t;

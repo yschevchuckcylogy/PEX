@@ -7,11 +7,12 @@ namespace PEX.Models
 {
     public class ValidateTransactionResponse
     {
-        public string transactionDateTime { get; set; }
-        public string userId { get; set; }
-        public string vendorId { get; set; }
-        public long transactionAmount { get; set; }
-        public bool approved { get; set; }
-        public long currentMonthUserSpend { get; set; }
+        public string TransactionDateTime { get; set; }
+        public string UserId { get; set; }
+        public string VendorId { get; set; }
+        public long TransactionAmount { get; set; }
+        public bool Approved { get; set; }
+        public long CurrentMonthUserSpend { get; set; }
+        public string DenialReason { get; set; }
     }
 }

@@ -131,6 +131,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="HomeViewModel\HomeViewModel.cs" />
+    <Compile Include="Models\DenialReasons.cs" />
     <Compile Include="Models\Transacrion.cs" />
     <Compile Include="Models\ValidateTransactionRequest.cs" />
     <Compile Include="Models\ValidateTransactionResponse.cs" />

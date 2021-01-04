@@ -57,25 +57,28 @@ namespace PEX.Controllers
         [HttpPost]
         public ActionResult ValidateTransaction(ValidateTransactionRequest request)
         {
-            if (string.IsNullOrEmpty(request.vendorid))
-                return Json(new ValidateTransactionResponse { approved = false }, JsonRequestBehavior.AllowGet);
+            if (string.IsNullOrEmpty(request.VendorId))
+                return Json(new ValidateTransactionResponse { Approved = false }, JsonRequestBehavior.AllowGet);
 
-            var vendor = _repository.GetVendorById(request.vendorid);
+            var vendor = _repository.GetVendorById(request.VendorId);
 
-            if(!vendor.Enabled)
-                return Json(new ValidateTransactionResponse { approved = false }, JsonRequestBehavior.AllowGet);
+            if(vendor == null)
+                return Json(new ValidateTransactionResponse { Approved = false, DenialReason = DenialReasons.VendorNotFound }, JsonRequestBehavior.AllowGet);
 
-            var sum = _repository.GetTransactionSum(request.vendorid, request.userid, DateTime.Now);
+            if (!vendor.Enabled)
+                return Json(new ValidateTransactionResponse { Approved = false, DenialReason = DenialReasons.VendorNotEnabled }, JsonRequestBehavior.AllowGet) ;
+
+            var sum = _repository.GetTransactionSum(request.VendorId, request.UserId, DateTime.Now);
 
             if (sum > vendor.MonthlyPerUserCap)
-                return Json(new ValidateTransactionResponse { approved = false }, JsonRequestBehavior.AllowGet);
+                return Json(new ValidateTransactionResponse { Approved = false, DenialReason = DenialReasons.TransactionOverMonthlyLimit}, JsonRequestBehavior.AllowGet);
 
             var insertedTransaction = _repository.InsertTranzaction(request);
             if (insertedTransaction == null)
-                return Json(new ValidateTransactionResponse { approved = false }, JsonRequestBehavior.AllowGet);
+                return Json(new ValidateTransactionResponse { Approved = false }, JsonRequestBehavior.AllowGet);
 
-            insertedTransaction.approved = true;
-            insertedTransaction.currentMonthUserSpend = sum;
+            insertedTransaction.Approved = true;
+            insertedTransaction.CurrentMonthUserSpend = sum;
 
             return Json(insertedTransaction, JsonRequestBehavior.AllowGet);
         }
