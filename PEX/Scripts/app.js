@@ -4,9 +4,9 @@ app.directive('ngConfirmClick', [
     function () {
         return {
             link: function (scope, element, attr) {
-                var msg = attr.ngConfirmClick || "Are you sure?";
                 var clickAction = attr.confirmedClick;
                 element.bind('click', function (event) {
+                    var msg = "This will update all vendor caps to " + window.cap + ", are you sure?";
                     if (window.confirm(msg)) {
                         scope.$eval(clickAction);
                     }
@@ -19,7 +19,8 @@ app.controller("EditVendors", function ($http, $scope) {
 
 
     $scope.vendors = window.vendors;
-    $scope.cap = 100500;
+    $scope.cap = window.cap;
+
 
     $scope.save = function (item) {
         return $http({
@@ -58,6 +59,10 @@ app.controller("EditVendors", function ($http, $scope) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.
         });
+    };
+
+    $scope.change = function () {
+        window.cap = $scope.cap;
     };
 
 });

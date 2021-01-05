@@ -46,6 +46,7 @@ namespace PEX.Controllers
         public ActionResult SetAllVendorsCap(float cap)
         {
             var vensors = _repository.GetVendors();
+            HttpContext.Session["cap"] = cap;
             foreach (var vendor in vensors)
             {
                 vendor.MonthlyPerUserCapDollars = cap;
@@ -78,7 +79,7 @@ namespace PEX.Controllers
                 return Json(new ValidateTransactionResponse { Approved = false }, JsonRequestBehavior.AllowGet);
 
             insertedTransaction.Approved = true;
-            insertedTransaction.CurrentMonthUserSpend = sum;
+            insertedTransaction.CurrentMonthUserSpend = _repository.GetTransactionSum(request.VendorId, request.UserId, DateTime.Now);
 
             return Json(insertedTransaction, JsonRequestBehavior.AllowGet);
         }

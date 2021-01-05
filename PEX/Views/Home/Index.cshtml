@@ -3,49 +3,61 @@
 <script src="~/Scripts/angular.js"></script>
 <script src="~/Scripts/app.js"></script>
 <script>window.vendors = @Html.Raw(Json.Encode(Model.Vendors))</script>
+@{
+    string lastCap = "";
+    if (HttpContext.Current.Session["cap"] != null)
+    {
+        lastCap = ((float)HttpContext.Current.Session["cap"]).ToString();
+        <script>window.cap = @lastCap</script>
+    }
+}
 
 @if (Model != null)
 {
-<div ng-app="app" ng-controller="EditVendors" ng-model="vendors">
+    <div ng-app="app" ng-controller="EditVendors" ng-model="vendors">
 
-    <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th class="col-md-8" scope="col"></th>
-                <th class="col-md-3" scope="col">Cap for all vendors</th>
-                <th class="col-md-1" scope="col">Save</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="col-md-8"></td>
-                <td class="col-md-3"><input type="number" min="1" step="0.01" ng-model="cap" /></td>
-                <td class="col-md-1"><input type="button" class="btn btn-success"  ng-confirm-click="This will update all vendor caps to {{cap}}, are you sure?" confirmed-click="setCapForVendors(cap)" value="Set Cap For Vendors" /></td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="col-md-12" style="text-align:center">
+            <h1>PEX Admin</h1>
+        </div>
 
-    <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Per User Cap</th>
-                <th scope="col">Enabled</th>
-                <th scope="col">Save</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="item in vendors">
-                <td><input class="form-control" type="text" ng-model="item.VendorName"></td>
-                <td><input type="number" min="1" step="0.01" ng-model="item.MonthlyPerUserCapDollars" /></td>
-                <td><input type="checkbox" ng-checked="item.Enabled" ng-model="item.Enabled"></td>
-                <td><input type="button" class="btn btn-success" ng-click="save(item)" value="Save" /></td>
-            </tr>
-        </tbody>
-    </table>
-    <div>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th class="col-md-8" scope="col"></th>
+                    <th class="col-md-3" scope="col">Cap for all vendors</th>
+                    <th class="col-md-1" scope="col">Save</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-md-8"></td>
+                    <td class="col-md-3"><input type="number" min="1" step="0.01" ng-model="cap" ng-change="change()" value="@lastCap" /></td>
+                    <td class="col-md-1"><input type="button" class="btn btn-success" ng-confirm-click="This will update all vendor caps to {{window.cap}}, are you sure?" confirmed-click="setCapForVendors(cap)" value="Set Cap For Vendors" /></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Per User Cap</th>
+                    <th scope="col">Enabled</th>
+                    <th scope="col">Save</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in vendors">
+                    <td><input class="form-control" type="text" ng-model="item.VendorName"></td>
+                    <td><input type="number" min="1" step="0.01" ng-model="item.MonthlyPerUserCapDollars" /></td>
+                    <td><input type="checkbox" ng-checked="item.Enabled" ng-model="item.Enabled"></td>
+                    <td><input type="button" class="btn btn-success" ng-click="save(item)" value="Save" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
 
             <input type="button" class="btn btn-success" ng-click="saveAll(vendors)" value="Save All" />
+        </div>
     </div>
-</div>
 }
